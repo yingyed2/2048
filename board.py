@@ -15,7 +15,7 @@ modifying emptyRow would modify every row in the board so,
 """
 
 
-def printBoard(board):
+def printBoard(board): # board is passed in as an argument
 
     print("\n") # spacing between each board
 
