@@ -1,5 +1,6 @@
 import random # randomly generate 2 or 4 tiles
 
+
 def placeRandomTile(board):
 
     emptyPositions = [] # list to store the positions of empty tiles
