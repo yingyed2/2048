@@ -10,7 +10,7 @@ def placeRandomTile(board):
                 emptyPositions.append((row, col)) # adding empty positions to list
 
     if len(emptyPositions) == 0:
-        return  # exits the function if there are no empty tiles
+        return # exits the function if there are no empty tiles
 
     randomPosition = random.choice(emptyPositions) # function from random module to select from empty list
     row, col = randomPosition # defines the selected position as row and column indices
@@ -36,7 +36,7 @@ def initBoard():
 
     # initialize empty board
     for i in range(4):
-        board.append(emptyRow[:])  # slicing the list to create copies
+        board.append(emptyRow[:]) # slicing the list to create copies
 
     placeRandomTile(board)
     placeRandomTile(board)
