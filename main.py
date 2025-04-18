@@ -43,7 +43,7 @@ def main():
 
             directionInput = input("Your move: ").strip().lower() # user input
 
-            if directionInput == 'undo': # handles undo input
+            if directionInput == 'undo' or directionInput == 'u': # handles undo input
                 if not canUndo:
                     print("You can't undo twice in a row!")
                     canPrint = False # prevents board from being reprinted
