@@ -26,6 +26,7 @@ class BoardState:
             self.board = self.previousStates.pop()
             return True # undo successful
         return False # no states to undo
+    
 """
 utilizes a stack data structure (LIFO behavior)
 : most recent board state is the first one to be restored;
@@ -156,6 +157,7 @@ def moveTiles(board, direction):
         newBoard = transpose(reversedMergedBoard)
 
     return newBoard
+
 """
 normalizing shiftingMerging for all direction using helper functions transpose() and reverse()
 each direction is either reversing the board, transposing, or a combination of both
@@ -167,6 +169,7 @@ def gameWon(board):
         if 2048 in row:
             return True
     return False
+
 """game is won if 2048 is in the board"""
 
 
@@ -185,4 +188,5 @@ def gameOver(board):
         return False
 
     return True
+
 """game is over if there are no available moves"""

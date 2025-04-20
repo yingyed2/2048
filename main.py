@@ -104,6 +104,7 @@ def main():
                 print("Invalid input. Please enter 'yes' or 'no'.")
         if playAgain.startswith('n'):
             break
+        
 """
 main() implements the real-time game loop, allowing players to replay and continue playing;
 takes mapped WASD keys as user inputs along with the ability to undo (cannot undo twice in a row)
