@@ -1,4 +1,54 @@
 import random # randomly generate 2 or 4 tiles
+import copy # deepcopying board
+
+"""
+copy module creates either shallow or deep copies
+
+shallow: copy of the original, but nested objects references original;
+modifying the nested objects in the shallow copy will also affect the original object
+(conceptually similar to using pointers in C)
+
+deep: duplicates the entire object hierarchy, creating independent copies of all nested objects;
+modifying the nested objects in the deep copy will not affect the original object
+
+we use deepcopy to avoid shared references, allowing us to effectively create an undo function
+"""
+
+
+class BoardState:
+    def __init__(self):
+        self.board = None # placeholder value
+        self.previousStates = [] # stack to store previous board states
+
+    def saveState(self): # saves the current board state to the stack
+        self.previousStates.append(copy.deepcopy(self.board))
+
+    def undo(self): # restores the last saved board state
+        if self.previousStates:
+            self.board = self.previousStates.pop()
+            return True # undo successful
+        return False # no states to undo
+    
+"""
+utilizes a stack data structure (LIFO behavior)
+: most recent board state is the first one to be restored;
+stack ensures the last saved state is always to first one to be retrieved
+
+push: adds an element to the top of the stack
+pop: remove the element from the top of the stack
+both operations are of time complexity O(1) (constant time), making this time efficient vs.
+a data structure like a queue (FIFO beahvior) which is of time complexity O(n)
+"""
+
+
+def reset(boardState):
+    boardState.board = initBoard() # resets the board to its initial state
+    boardState.previousStates = [] # clears undo history
+    print("Game has been reset!")
+
+"""
+utiizes boardState to implement reset feature
+"""
 
 
 def placeRandomTile(board):
@@ -55,12 +105,10 @@ def printBoard(board): # board is passed in as an argument
 
     for row in board:
         printedRow = [] # holder variable to be printed
-
+        
         for tile in row:
-
             if tile == 0:
                 printedRow.append(" -".rjust(5)) # 0 or empty is represented as - for readability
-
             else:
                 printedRow.append(str(tile).rjust(5)) # .rjust(n) adds n spaces to the left of the str
 
