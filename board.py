@@ -47,7 +47,7 @@ def reset(boardState):
     print("Game has been reset!")
 
 """
-utiizes boardState to implement reset feature
+utiizes BoardState class to implement reset feature
 """
 
 
@@ -114,3 +114,5 @@ def printBoard(board): # board is passed in as an argument
 
         print(" ".join(printedRow)) # concatentates the elements of the each row
         print("\n") # spacing between each row
+
+"""formatting the board in the terminal"""
