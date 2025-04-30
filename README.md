@@ -47,5 +47,4 @@ After a game where the user won, the final output might look like this:
 
 🎉 Congratulations! You reached 2048! 🎉
 🏆 You Win! 🏆
-Final Score: 10,432
 
