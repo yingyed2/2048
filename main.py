@@ -1,10 +1,17 @@
+import sys
+import termios
 from board import BoardState, reset, placeRandomTile, initBoard, printBoard
 from game import moveTiles, gameWon, gameOver
-from pynput import keyboard  # keyboard listening
+from pynput import keyboard # keyboard listening
+
+def clearBufferedInput():
+    """Clears any buffered input in the terminal."""
+    if sys.stdin.isatty(): # Check if running in a terminal
+        termios.tcflush(sys.stdin, termios.TCIFLUSH)
 
 def main():
 
-    wasd = {  # mapping direction inputs
+    wasd = { # mapping direction inputs
         'w': 'up',
         'a': 'left',
         's': 'down',
@@ -13,18 +20,18 @@ def main():
         'r': 'reset'
     }
 
-    listener = None  # initialize the listener variable
+    listener = None # initialize the listener variable
 
     """outer loop for replayability"""
     while True:
 
         """initializes the board state"""
         boardState = BoardState()
-        boardState.board = initBoard()  # initializes the board
-        won = False  # tracks win condition, avoiding repetitive prompts
-        canUndo = True  # tracks if undo is allowed
-        canPrint = True  # controls whether the board should be printed
-        exitGame = False  # tracks if the player wants to exit the game
+        boardState.board = initBoard() # initializes the board
+        won = False # tracks win condition, avoiding repetitive prompts
+        canUndo = True # tracks if undo is allowed
+        canPrint = True # controls whether the board should be printed
+        exitGame = False # tracks if the player wants to exit the game
 
         """inner loop for 2048"""
         while True:
@@ -32,20 +39,25 @@ def main():
             if canPrint:
                 print("\nCurrent Board:")
                 printBoard(boardState.board)
-                print("Your move:")  # Only print this once when the board is displayed
+                print("Your move:")
 
-            canPrint = False  # Reset flag to prevent unnecessary reprinting
+            canPrint = False # reset flag to prevent unnecessary reprinting
 
             """replay conditional"""
-            if not won and gameWon(boardState.board):  # checks if player has won
+            if not won and gameWon(boardState.board): # checks if player has won
                 print("Congratulations! You've reached 2048!")
                 
-                while True:  # loop until valid input is provided
-                    keepPlaying = input("Do you want to keep playing?").strip().lower()  # normalize input to lowercase
-                    if keepPlaying.startswith('y'):
+                while True: # loop until valid input is provided
+                    clearBufferedInput()
+                    keepPlaying = input("Do you want to keep playing? ").strip().lower() # normalize input to lowercase
+                    if keepPlaying.startswith('y'): # explicitly check for "yes"
+                        print("\nCurrent Board: ")
+                        printBoard(boardState.board)
+                        print("Your move: ")
+                        boardState.previousStates = []  # Clear the undo stack
                         break  # exit the loop if input is valid
-                    elif keepPlaying.startswith('n'):
-                        print("You won! Thanks for playing!")
+                    elif keepPlaying.startswith('n'): # explicitly check for "no"
+                        print("Thanks for playing!")
                         exitGame = True
                         break
                     else:
@@ -53,9 +65,9 @@ def main():
 
                 if exitGame:
                     break
-                won = True  # player wants to keep playing so if block doesn't repeat
+                won = True # player wants to keep playing so if block doesn't repeat
 
-            if gameOver(boardState.board):  # checks if the game is over
+            if gameOver(boardState.board): # checks if the game is over
                 print("Game Over!")
                 break
 
@@ -66,67 +78,77 @@ def main():
             def on_press(key):
                 nonlocal directionInput
                 try:
-                    char = key.char.lower()  # normalize input to lowercase
+                    char = key.char.lower() # normalize input to lowercase
                     if char in wasd:
                         directionInput = char
-                        return False  # stop listener
+                        return False # stop listener
                 except AttributeError:
                     pass
 
             listener = keyboard.Listener(on_press=on_press)
             listener.start()
-            listener.join()  # wait for the listener to stop
+            listener.join() # wait for the listener to stop
+
+            clearBufferedInput()
 
             """undo conditional"""
-            if directionInput == 'u':  # handles undo input
+            if directionInput == 'u': # handles undo input
                 if not canUndo:
-                    print("You can't undo twice in a row!")
+                    print("\nYou can't undo twice in a row!")
+                    continue
+                if not boardState.previousStates:  # Check if undo stack is empty
+                    print("\nNo moves to undo!")
                     continue
                 if boardState.undo():
-                    print("Undo successful!")
-                    canUndo = False  # disables the flag until a valid move is made
-                    canPrint = True  # print the board after the first undo
+                    canUndo = False # disables the flag until a valid move is made
+                    canPrint = True # print the board after the first undo
                 else:
-                    print("No moves to undo!")
+                    print("\nNo moves to undo!")
                 continue
 
             """reset conditional"""
-            if directionInput == 'r':  # handles reset input
+            if directionInput == 'r': # handles reset input
                 reset(boardState)
-                canUndo = True  # enables undo after reset
-                canPrint = True  # print the board after reset
+                canUndo = True # enables undo after reset
+                canPrint = True # print the board after reset
                 continue
 
             if directionInput in wasd:
                 directionInput = wasd[directionInput]
             elif directionInput not in ['left', 'right', 'up', 'down']:
                 print("Invalid input.")
-                continue  # invalid input
+                continue # invalid input
 
-            boardState.saveState()  # saves the current board state before making a move
+            boardState.saveState() # saves the current board state before making a move
 
-            newBoard = moveTiles(boardState.board, directionInput)  # creates newBoard after valid move
+            newBoard = moveTiles(boardState.board, directionInput) # creates newBoard after valid move
 
-            if newBoard != boardState.board:  # if the board changes
+            if newBoard != boardState.board: # if the board changes
                 boardState.board = newBoard
-                placeRandomTile(boardState.board)  # updates board and add new tiles
-                canUndo = True  # enables undo after a valid move
-                canPrint = True  # print the board after a valid move
+                placeRandomTile(boardState.board) # updates board and add new tiles
+                canUndo = True # enables undo after a valid move
+                canPrint = True # print the board after a valid move
             else:
-                print("Move not valid. Try a different direction.")
-                boardState.previousStates.pop()  # removes the saved state if the move was invalid
+                print("\nMove not valid. Try a different direction.")
+                boardState.previousStates.pop() # removes the saved state if the move was invalid
 
-        if exitGame:  # exits the outer loop if the player doesn't want to play again
+        if exitGame: # exits the outer loop if the player doesn't want to play again
             break
 
         """replay loop"""
-        while True:  # loop until valid input is provided
+        while True: # loop until valid input is provided
+            clearBufferedInput()
             playAgain = input("Do you want to play again?: ").strip().lower()
             if playAgain.startswith('n'):
                 print("Thanks for playing!")
                 exitGame = True
                 break
             elif playAgain.startswith('y'):
+                boardState = BoardState()  # Reinitialize the board state
+                boardState.board = initBoard()  # Reset the board to its initial state
+                boardState.previousStates = []  # Clear the undo stack
+                canUndo = True  # Reset undo flag
+                canPrint = True  # Ensure the board is printed after restarting
                 break
             else:
                 print("Invalid input. Please enter 'yes' or 'no'.")
@@ -143,7 +165,8 @@ and printing the board after invalid inputs, and fixing a bug with replayability
 initializes board and variables when loop begins, iteratively checking if that game has been won,
 allowing for replayability and continuity, and updating and saving the current board after every new valid input
 
-restores keyboard listening functionality using pynput
+allows for keyboard listening functionality using pynput an subsequent restoration of bugs by creating
+a clearBufferedInput() function to clear the terminal of buffered key presses
 """
 
 
