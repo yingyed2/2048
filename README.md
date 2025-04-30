@@ -21,6 +21,9 @@ Rules:
 - The game ends when there are no possible moves left (no empty spaces and no adjacent tiles that can merge).
 - The score increases with every merge.
 
+To compile and run (version dependent, but file should be main.py):
+python3.12 main.py 
+
 After a game where the user lost, the final output might look like this:
 ---------------------
 |  2 |  4 |  8 | 16 |
