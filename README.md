@@ -1,16 +1,15 @@
 Project: Recreating the popular game 2048 as part of our final project for ECE-160 Spring 2025
 
-Description: This is a python implementation of the classic 2048 game, where players combine tiles, of powers of 2,to reach the number 2048. The game is played on a 4x4 grid, and tiles move in response to arrow key inputs.
+Description: This is a python implementation of the classic 2048 game, where players combine tiles, of powers of 2,to reach the number 2048. The game is played on a 4x4 grid, and tiles move in response to WASD key inputs.
 
 Features: 
 - tile meging
-- arrow key controls for movement
-- score tracking (?)
+- WASD controls for movement
 - game over detection
 - terminal-based
 
 Controls:
-- Arrow keys or WASD keys 
+- WASD keys 
 - Tiles merge when two tiles of the same nuumber collide, doubling their value.
 - New tiles (usually 2 or 4) appear in an empty spot after every move.
 
@@ -48,6 +47,5 @@ After a game where the user won, the final output might look like this:
 |  8 | 16 | 32 | 64 |
 ----------------------
 
-🎉 Congratulations! You reached 2048! 🎉
-🏆 You Win! 🏆
+🎉 Congratulations! You reached 2048! 🎉🏆 You Win! 🏆
 
