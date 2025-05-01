@@ -5,9 +5,11 @@ from game import moveTiles, gameWon, gameOver
 from pynput import keyboard # keyboard listening
 
 def clearBufferedInput():
-    """Clears any buffered input in the terminal."""
-    if sys.stdin.isatty(): # Check if running in a terminal
+    if sys.stdin.isatty(): # check if running in a terminal
         termios.tcflush(sys.stdin, termios.TCIFLUSH)
+        
+"""clears any buffered input in the terminal"""
+
 
 def main():
 
@@ -54,7 +56,6 @@ def main():
                         print("\nCurrent Board: ")
                         printBoard(boardState.board)
                         print("Your move: ")
-                        boardState.previousStates = []  # Clear the undo stack
                         break  # exit the loop if input is valid
                     elif keepPlaying.startswith('n'): # explicitly check for "no"
                         print("Thanks for playing!")

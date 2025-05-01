@@ -125,7 +125,7 @@ each direction is either reversing the board, transposing, or a combination of b
 
 def gameWon(board):
     for row in board:
-        if 2048 in row:
+        if 32 in row:
             return True
     return False
 
