@@ -47,7 +47,7 @@ def main():
 
             """replay conditional"""
             if not won and gameWon(boardState.board): # checks if player has won
-                print("🎉 Congratulations! You've reached 2048!🎉 🏆 You Win! 🏆")
+                print("🎉 Congratulations! You've reached 2048! 🎉 🏆 You Win! 🏆")
                 
                 while True: # loop until valid input is provided
                     clearBufferedInput()
